@@ -8,6 +8,7 @@
     cinema: true,
     facepalm: true,
     snapSound: true,
+    autoMute: true,
     sensitivity: 0.5,
     showDebug: false,
     cinemaText: 'ABSOLUTE CINEMA',

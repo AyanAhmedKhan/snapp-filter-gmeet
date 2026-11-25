@@ -5,6 +5,7 @@ const DEFAULTS = {
   cinema: true,
   facepalm: true,
   snapSound: true,
+  autoMute: true,
   sensitivity: 0.5,
   showDebug: false,
   cinemaText: 'ABSOLUTE CINEMA',
@@ -40,6 +41,7 @@ async function refreshStatus() {
   else if (!s.hooked) setStatus('Waiting for your camera to turn on…');
   else if (s.detector === 'error') setStatus(`Detector failed: ${s.error}`, 'err');
   else if (s.detector !== 'ready') setStatus('Camera hooked. Loading hand tracking…');
+  else if (s.micMuted) setStatus('You\'re vanished. Mic muted until you snap back.', 'ok');
   else if (s.room === 'learning') setStatus('Learning your room… keep the camera still for a few seconds.');
   else {
     const room = s.room === 'unavailable' ? 'Room fill unavailable, using blur.' : 'Room learned.';

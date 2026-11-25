@@ -23,10 +23,10 @@
   const GESTURE_FX = { snap: ['snap', 'dust'], doubleSnap: ['doubleSnap', 'cash'], cinema: ['cinema', 'cinema'], facepalm: ['facepalm', 'facepalm'] };
 
   NS.settings = {
-    enabled: true, snap: true, doubleSnap: true, cinema: true, facepalm: true, snapSound: true,
+    enabled: true, snap: true, doubleSnap: true, cinema: true, facepalm: true, snapSound: true, autoMute: true,
     sensitivity: 0.5, showDebug: false, cinemaText: 'ABSOLUTE CINEMA', facepalmText: 'bruh.',
   };
-  const status = { hooked: false, detector: 'idle', backend: null, error: null, room: 'idle', sound: 'off' };
+  const status = { hooked: false, detector: 'idle', backend: null, error: null, room: 'idle', sound: 'off', micMuted: false };
   const fx = new NS.FXManager();
   const gestures = new NS.GestureEngine();
   const pipelines = new Set();
@@ -274,6 +274,7 @@
       if (!NS.settings[setting]) continue;
       startEffect(name, now, false);
     }
+    if (events.length) syncMute();
   }
 
   function startEffect(name, now, force) {
@@ -380,6 +381,60 @@
     },
   };
 
+  // ---- Auto-mute. While you're vanished (dust has blown you away and you
+  // haven't snapped back yet), every mic track the call got from
+  // getUserMedia, and every clone of one, is disabled, so the call sends
+  // silence. Only tracks muted here are re-enabled, so a mic you had already
+  // muted stays muted. The snap-sound listener uses its own capture, so it still
+  // hears the snap that brings you back.
+
+  const micTracks = new Set();
+  const mutedByUs = new Set();
+  let micMuted = false;
+
+  function adoptMic(t) {
+    if (t?.kind !== 'audio' || micTracks.has(t)) return;
+    micTracks.add(t);
+    if (micMuted && t.enabled) {
+      t.enabled = false;
+      mutedByUs.add(t);
+    }
+  }
+
+  const nativeTrackClone = MediaStreamTrack.prototype.clone;
+  MediaStreamTrack.prototype.clone = function clone() {
+    const copy = nativeTrackClone.call(this);
+    if (micTracks.has(this)) adoptMic(copy);
+    return copy;
+  };
+
+  function isVanished() {
+    const a = fx.active;
+    return a?.name === 'dust' && a.fx.returnAt === null;
+  }
+
+  function syncMute() {
+    const want = !!(NS.settings.enabled && NS.settings.autoMute && isVanished());
+    if (want === micMuted) return;
+    micMuted = want;
+    if (want) {
+      for (const t of micTracks) {
+        if (t.readyState !== 'live') {
+          micTracks.delete(t);
+          continue;
+        }
+        if (t.enabled) {
+          t.enabled = false;
+          mutedByUs.add(t);
+        }
+      }
+    } else {
+      for (const t of mutedByUs) if (t.readyState === 'live') t.enabled = true;
+      mutedByUs.clear();
+    }
+    setStatus({ micMuted: want });
+  }
+
   ['pointerdown', 'keydown'].forEach((type) => window.addEventListener(type, () => {
     if (sound.ctx?.state === 'suspended') sound.ctx.resume().catch(() => {});
   }, true));
@@ -393,11 +448,13 @@
     if (!NS.settings.enabled) fx.active = null;
     if (!NS.settings.snapSound && sound.stream) sound.stop();
     if (NS.settings.snapSound && pipelines.size && !sound.stream) sound.start(lastAudioDevice);
+    syncMute();
   }
 
   function manual(name) {
     if (!NS.settings.enabled) return;
     startEffect(name, performance.now(), true);
+    syncMute();
   }
 
   function background(action) {
@@ -412,6 +469,7 @@
       scene.captureUntil = now + 4500;
       scene.inpaintedAt = 1;
     }
+    syncMute();
   }
 
   window.addEventListener('message', (e) => {
@@ -513,6 +571,7 @@
         sound.poll(now);
         handleEvents(gestures.tick(now), now);
         fx.draw(ctx, frame, W, H, now / 1000, scene, NS.settings);
+        syncMute();
         if (NS.settings.showDebug) drawDebug(ctx, W, H);
 
         const out = new VideoFrame(this.canvas, { timestamp: frame.timestamp });
@@ -559,6 +618,7 @@
     const stream = await originalGUM.call(this, constraints);
     const [video] = stream.getVideoTracks();
     const [audio] = stream.getAudioTracks();
+    stream.getAudioTracks().forEach(adoptMic);
     if (audio) {
       sawAudio = true;
       lastAudioDevice = audio.getSettings().deviceId || lastAudioDevice;
