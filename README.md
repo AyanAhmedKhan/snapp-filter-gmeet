@@ -2,7 +2,6 @@
 
 Magic gestures for your video calls. 🫰
 
-> **About this fork:** based on [Jaadu Snap](https://github.com/dadiyanidhi/jaadu-snap) by Nidhi Dadiya (MIT). It adds **auto-mute**: your mic goes silent while you're vanished and comes back when you snap back.
 >
 > **[⬇ Download the latest release](https://github.com/AyanAhmedKhan/snapp-filter-gmeet/releases/latest)**, unzip it, and follow [Install](#install).
 
