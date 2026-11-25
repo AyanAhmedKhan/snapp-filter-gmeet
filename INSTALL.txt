@@ -1,0 +1,32 @@
+JAADU SNAP - snap your fingers on camera and turn to dust
+Open source (MIT): https://github.com/AyanAhmedKhan/snapp-filter-gmeet
+Based on Jaadu Snap by Nidhi Dadiya: https://github.com/dadiyanidhi/jaadu-snap
+
+INSTALL (2 minutes)
+1. Unzip jaadu-snap.zip into a plain folder that you won't delete, for example C:\Extensions\
+   Avoid OneDrive / Dropbox folders (sync can break the extension).
+2. Open Chrome and go to chrome://extensions
+3. Turn on "Developer mode" (top right).
+4. Click "Load unpacked" and pick the jaadu-snap folder (the one with manifest.json inside).
+5. Pin it from the puzzle-piece icon, then reload any open meeting tabs.
+
+USE IT
+1. Join Google Meet / Teams (web) / Zoom (web, "Join from your browser") with your camera on.
+2. Keep the camera still ~10-20 seconds. The popup says "Ready" when it has learned your room.
+3. Raise your hand to face or chest height, palm to the camera, press thumb and middle
+   finger together, then snap. You turn to dust.
+4. Snap again to come back.
+   Keyboard backup: Alt+Shift+1 (vanish / come back).
+
+TIPS
+- Best empty room: click "Capture empty room" in the popup and step out of frame for ~5 seconds.
+  Otherwise the spot right behind you is filled in by AI and can look soft/blurry.
+- Moved the camera? Click "Relearn room".
+- A single snap waits ~0.7 s in case it's a double snap (double snap = cash rain).
+  Untick "Snap twice -> cash rain" in the popup to make single snaps instant.
+- Auto-mute: your mic goes silent while you're vanished and comes back when you snap back.
+  The meeting's own mic button won't change (others just hear silence), so check the
+  popup: it says "You're vanished. Mic muted" while it's on. If you had muted yourself
+  before vanishing, you stay muted after you return. Turn it off with
+  "Mute my mic while I'm vanished" in the popup.
+- Test it alone first: start an instant meeting on meet.google.com and snap at your self view.

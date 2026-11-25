@@ -2,6 +2,10 @@
 
 Magic gestures for your video calls. 🫰
 
+> **About this fork:** based on [Jaadu Snap](https://github.com/dadiyanidhi/jaadu-snap) by Nidhi Dadiya (MIT). It adds **auto-mute**: your mic goes silent while you're vanished and comes back when you snap back.
+>
+> **[⬇ Download the latest release](https://github.com/AyanAhmedKhan/snapp-filter-gmeet/releases/latest)**, unzip it, and follow [Install](#install).
+
 | Gesture | Effect |
 | --- | --- |
 | Snap | You turn to dust, Endgame style, and the empty room shows where you were. Snap again to come back |
@@ -26,7 +30,7 @@ It works by changing the camera feed inside a browser tab, so it can't reach des
 
 ## Install
 
-1. Download this repo: **Code → Download ZIP**, then unzip it somewhere permanent (not Downloads, which gets cleaned up). Or `git clone` it.
+1. Download the zip from [Releases](https://github.com/AyanAhmedKhan/snapp-filter-gmeet/releases/latest) (or **Code → Download ZIP**), then unzip it somewhere permanent such as `C:\Extensions` (not Downloads, which gets cleaned up, and not a OneDrive or Dropbox folder). Or `git clone` it.
 2. Open `chrome://extensions` and turn on **Developer mode** (top right).
 3. Click **Load unpacked** and pick the folder that contains `manifest.json`.
 4. Pin the extension, then reload any open call tabs.
@@ -72,7 +76,8 @@ When you vanish, the extension paints the room behind you over where you are. It
 ## Good to know
 
 - Most call apps mirror your self-view, so captions look backwards to you. Everyone else sees them the right way round.
-- Effects are only visible to others while your camera is on. Your mic audio in the call is untouched; the extension opens its own copy of the mic just to hear snaps.
+- Effects are only visible to others while your camera is on. The extension opens its own copy of the mic just to hear snaps.
+- **Auto-mute:** while you're vanished, the call's mic tracks are disabled so everyone hears silence; snapping back turns them on again. A mic you had already muted stays muted. The call app's own mic button doesn't change. Turn it off with **Mute my mic while I'm vanished** in the popup.
 - Snap detection relies on the camera seeing your hand clearly. Good lighting and a hand that isn't cut off by the frame edge help a lot.
 - If the call app's own background effects (blur, virtual backgrounds) are on, they're applied on top of the extension's output.
 

@@ -5,5 +5,5 @@ cd "$(dirname "$0")/.."
 VERSION=$(node -p "require('./manifest.json').version")
 mkdir -p dist
 rm -f "dist/jaadu-snap-$VERSION.zip"
-zip -qr "dist/jaadu-snap-$VERSION.zip" manifest.json src detector popup icons vendor models LICENSE THIRD_PARTY_NOTICES.md licenses
+zip -qr "dist/jaadu-snap-$VERSION.zip" manifest.json src detector popup icons vendor models LICENSE THIRD_PARTY_NOTICES.md licenses README.md INSTALL.txt
 echo "dist/jaadu-snap-$VERSION.zip"
